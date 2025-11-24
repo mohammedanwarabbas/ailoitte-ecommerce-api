@@ -71,7 +71,14 @@ const create = async (req, res) => {
       product,
     });
   } catch (error) {
-    res.status(error.statusCode || 500).json({
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    }
+    
+    res.status(500).json({
       success: false,
       message: error.message || 'Failed to create product',
     });

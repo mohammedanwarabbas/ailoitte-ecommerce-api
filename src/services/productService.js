@@ -11,6 +11,19 @@ const createProduct = async (productData) => {
       throw { statusCode: 404, message: 'Category not found' };
     }
 
+    //Check for duplicate product name in same category
+    const existingProduct = await Product.findOne({
+      where: { 
+        name: productData.name, 
+        categoryId: productData.categoryId,
+        isDeleted: false 
+      }
+    });
+
+    if (existingProduct) {
+      throw { statusCode: 400, message: 'Product with this name already exists in this category' };
+    }
+
     const product = await Product.create(productData);
     return product;
   } catch (error) {
@@ -110,6 +123,22 @@ const updateProduct = async (id, productData) => {
 
       if (!category) {
         throw { statusCode: 404, message: 'Category not found' };
+      }
+    }
+
+    // ✅ CORRECT: Check for duplicate product name when name is being updated
+    if (productData.name && productData.name !== product.name) {
+      const existingProduct = await Product.findOne({
+        where: { 
+          name: productData.name, 
+          categoryId: productData.categoryId || product.categoryId,
+          isDeleted: false,
+          id: { [Op.ne]: id } // Exclude current product from check
+        }
+      });
+
+      if (existingProduct) {
+        throw { statusCode: 400, message: 'Product with this name already exists in this category' };
       }
     }
 

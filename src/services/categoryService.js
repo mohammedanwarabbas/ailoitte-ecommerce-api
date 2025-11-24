@@ -2,6 +2,18 @@ const { Category } = require('../models');
 
 const createCategory = async (categoryData) => {
   try {
+    // Check for duplicate category name
+    const existingCategory = await Category.findOne({
+      where: { 
+        name: categoryData.name,
+        isDeleted: false 
+      }
+    });
+
+    if (existingCategory) {
+      throw { statusCode: 400, message: 'Category with this name already exists' };
+    }
+
     const category = await Category.create(categoryData);
     return category;
   } catch (error) {
@@ -49,6 +61,21 @@ const getCategoryById = async (id) => {
 const updateCategory = async (id, categoryData) => {
   try {
     const category = await getCategoryById(id);
+
+    // Check for duplicate category name when name is being updated
+    if (categoryData.name && categoryData.name !== category.name) {
+      const existingCategory = await Category.findOne({
+        where: { 
+          name: categoryData.name,
+          isDeleted: false 
+        }
+      });
+
+      if (existingCategory) {
+        throw { statusCode: 400, message: 'Category with this name already exists' };
+      }
+    }
+
     await category.update(categoryData);
     return category;
   } catch (error) {

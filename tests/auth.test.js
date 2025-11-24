@@ -86,14 +86,30 @@ describe('Auth Service', () => {
         role: 'customer',
       });
 
-      await expect(loginUser(email, wrongPassword)).rejects.toThrow();
+      // Check that login fails with proper error response
+      try {
+        await loginUser(email, wrongPassword);
+        // If we reach here, login didn't throw as expected
+        fail('Login should have failed with incorrect password');
+      } catch (error) {
+        expect(error.statusCode).toBe(401);
+        expect(error.message).toBe('Invalid credentials');
+      }
     });
 
     it('should fail to login with non-existent user', async () => {
       const email = 'nonexistent@test.com';
       const password = 'password123';
 
-      await expect(loginUser(email, password)).rejects.toThrow();
+      // Check that login fails with proper error response
+      try {
+        await loginUser(email, password);
+        // If we reach here, login didn't throw as expected
+        fail('Login should have failed with non-existent user');
+      } catch (error) {
+        expect(error.statusCode).toBe(401);
+        expect(error.message).toBe('Invalid credentials');
+      }
     });
   });
 });
