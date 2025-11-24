@@ -29,7 +29,7 @@ A RESTful e-commerce backend API built with Node.js, Express, and PostgreSQL.
    ```
 
 4. Set up environment variables:
-   Create a `.env` file based on `.env.example`
+   Create a `.env` and `.env.test` file based on `.env.example`
 
 5. Run database migrations:
    ```bash
