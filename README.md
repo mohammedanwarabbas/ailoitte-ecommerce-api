@@ -36,9 +36,9 @@ A RESTful e-commerce backend API built with Node.js, Express, and PostgreSQL.
    npx sequelize-cli db:migrate
    ```
 
-6. Run database seeders (optional):
+6. Run admin seeder (optional):
    ```bash
-   npx sequelize-cli db:seed:all
+   npm run db:seed:admin
    ```
 
 7. Start the development server:
